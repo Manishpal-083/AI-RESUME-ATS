@@ -1,9 +1,8 @@
-from sentence_transformers import SentenceTransformer, util
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-model = SentenceTransformer("all-mpnet-base-v2")
-
-def similarity_score(resume_text, jd_text):
-    emb1 = model.encode(resume_text, convert_to_tensor=True)
-    emb2 = model.encode(jd_text, convert_to_tensor=True)
-    sim = util.pytorch_cos_sim(emb1, emb2).item()
-    return sim
+def similarity_score(text1, text2):
+    vectorizer = TfidfVectorizer(stop_words="english")
+    vectors = vectorizer.fit_transform([text1, text2])
+    score = cosine_similarity(vectors[0], vectors[1])[0][0]
+    return float(score)
